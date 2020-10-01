@@ -48,7 +48,13 @@ do
       else
         echo -e "${GREEN}Waiting for the device to turn on.${NC}"
         echo -e "${RED}Keep it connected.${NC}"
-        adb wait-for-device
+        while [[ $isDet != '0' ]]; do # wait until detected
+          adb kill-server &> /dev/null
+          adb start-server &> /dev/null
+          adb devices | grep -w "device" &> /dev/null
+          isDet=$?
+          sleep 3
+        done
       fi
       RET2='n'
       while [ $RET2 == 'n' ]
